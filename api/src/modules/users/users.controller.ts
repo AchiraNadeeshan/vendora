@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -108,5 +109,20 @@ export class UsersController {
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<{ message: string }> {
     return await this.usersService.changePassword(userId, changePasswordDto);
+  }
+
+  // Delete current user account
+  @Delete('me')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete current user account' })
+  @ApiResponse({
+    status: 200,
+    description: 'User account deleted successfully',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async deleteAccount(
+    @GetUser('id') userId: string,
+  ): Promise<{ message: string }> {
+    return await this.usersService.remove(userId);
   }
 }
