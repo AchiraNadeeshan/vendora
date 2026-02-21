@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryResponseDto } from './dto/category-response.dto';
@@ -41,23 +41,6 @@ export class CategoryService {
     });
 
     return this.formatCategory(category, 0);
-  }
-
-  private formatCategory(
-    category: Category,
-    productCount: number,
-  ): CategoryResponseDto {
-    return {
-      id: category.id,
-      name: category.name,
-      description: category.description,
-      slug: category.slug,
-      imageUrl: category.imageUrl,
-      isActive: category.isActive,
-      productCount,
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt,
-    };
   }
 
   // Get all categories with optional filters and pagination
@@ -108,6 +91,41 @@ export class CategoryService {
         limit,
         totalPages: Math.ceil(total / limit),
       },
+    };
+  }
+
+  // Get category by ID
+  async findOne(id: string): Promise<CategoryResponseDto> {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    return this.formatCategory(category, Number(category._count.products));
+  }
+
+  private formatCategory(
+    category: Category,
+    productCount: number,
+  ): CategoryResponseDto {
+    return {
+      id: category.id,
+      name: category.name,
+      description: category.description,
+      slug: category.slug,
+      imageUrl: category.imageUrl,
+      isActive: category.isActive,
+      productCount,
+      createdAt: category.createdAt,
+      updatedAt: category.updatedAt,
     };
   }
 }

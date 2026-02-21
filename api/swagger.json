@@ -509,6 +509,40 @@
           "Categories"
         ]
       }
+    },
+    "/api/v1/categories/{id}": {
+      "get": {
+        "operationId": "CategoryController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        },
+        "summary": "Get category by ID",
+        "tags": [
+          "Categories"
+        ]
+      }
     }
   },
   "info": {
@@ -765,6 +799,72 @@
       "Object": {
         "type": "object",
         "properties": {}
+      },
+      "CategoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "550e484-ere8458454-45erer4844858",
+            "description": "The unique identifier of the category"
+          },
+          "name": {
+            "type": "string",
+            "example": "Electronics",
+            "description": "The name of the category"
+          },
+          "description": {
+            "type": "object",
+            "example": "Devices and gadgets including phones, laptops, and accessories",
+            "description": "A brief description of the category",
+            "nullable": true
+          },
+          "slug": {
+            "type": "object",
+            "example": "electronics",
+            "description": "The URL-friendly slug for the category",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "object",
+            "example": "https://example.com/images/electronics.png",
+            "description": "URL of the category image",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the category is active"
+          },
+          "productCount": {
+            "type": "number",
+            "example": 150,
+            "description": "Number of products in this category"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-01-01T12:00:00Z",
+            "description": "The date and time when the category was created"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2024-01-10T15:30:00Z",
+            "description": "The date and time when the category was last updated"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "slug",
+          "imageUrl",
+          "isActive",
+          "productCount",
+          "createdAt",
+          "updatedAt"
+        ]
       }
     }
   }
