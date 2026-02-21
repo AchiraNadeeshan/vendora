@@ -1,6 +1,15 @@
-import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -12,6 +21,8 @@ import type { RequestWithUser } from 'src/common/interfaces/request-with-user.in
 import { UserResponseDto } from './dto/user-response.dto';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { Role } from '@prisma/client';
+import { GetUser } from 'src/common/decorators/get-user.decorator';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('users')
 @ApiBearerAuth('JWT-auth')
@@ -63,5 +74,23 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User not found' })
   async findOne(@Param('id') id: string): Promise<UserResponseDto> {
     return await this.usersService.findOne(id);
+  }
+
+  // Update current user profile
+  @Patch('me')
+  @ApiOperation({ summary: 'Update current user profile' })
+  @ApiBody({ type: UpdateUserDto })
+  @ApiResponse({
+    status: 200,
+    description: 'The updated user profile',
+    type: UserResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 409, description: 'Email already in use' })
+  async updateProfile(
+    @GetUser('id') userId: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
+    return await this.usersService.update(userId, updateUserDto);
   }
 }
