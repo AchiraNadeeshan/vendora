@@ -543,6 +543,40 @@
           "Categories"
         ]
       }
+    },
+    "/api/v1/categories/slug/{slug}": {
+      "get": {
+        "operationId": "CategoryController_findBySlug",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CategoryResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Category not found"
+          }
+        },
+        "summary": "Get category by slug",
+        "tags": [
+          "Categories"
+        ]
+      }
     }
   },
   "info": {

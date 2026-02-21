@@ -112,6 +112,24 @@ export class CategoryService {
     return this.formatCategory(category, Number(category._count.products));
   }
 
+  // Get category by slug
+  async findBySlug(slug: string): Promise<CategoryResponseDto> {
+    const category = await this.prisma.category.findUnique({
+      where: { slug },
+      include: {
+        _count: {
+          select: { products: true },
+        },
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    return this.formatCategory(category, Number(category._count.products));
+  }
+
   private formatCategory(
     category: Category,
     productCount: number,

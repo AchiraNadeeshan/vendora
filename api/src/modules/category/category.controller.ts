@@ -89,4 +89,19 @@ export class CategoryController {
   async findOne(@Param('id') id: string): Promise<CategoryResponseDto> {
     return await this.categoryService.findOne(id);
   }
+
+  // Get category by slug
+  @Get('slug/:slug')
+  @ApiOperation({
+    summary: 'Get category by slug',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Category details',
+    type: CategoryResponseDto,
+  })
+  @ApiResponse({ status: 404, description: 'Category not found' })
+  async findBySlug(@Param('slug') slug: string): Promise<CategoryResponseDto> {
+    return await this.categoryService.findBySlug(slug);
+  }
 }
