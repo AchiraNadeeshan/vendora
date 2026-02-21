@@ -62,4 +62,36 @@ export class ProductsController {
   ): Promise<ProductResponseDto> {
     return await this.productsService.create(createProductDto);
   }
+
+  // Get all products
+  @Get()
+  @ApiOperation({
+    summary: 'Get all products with optional filters',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of products with pagination',
+    schema: {
+      type: 'object',
+      properties: {
+        data: {
+          type: 'array',
+          items: { $ref: '#/components/schemas/ProductResponseDto' },
+        },
+
+        meta: {
+          type: 'object',
+          properties: {
+            total: { type: 'number' },
+            page: { type: 'number' },
+            limit: { type: 'number' },
+            totalPages: { type: 'number' },
+          },
+        },
+      },
+    },
+  })
+  async findAll(@Query() queryDto: QueryProductDto) {
+    return await this.productsService.findAll(queryDto);
+  }
 }

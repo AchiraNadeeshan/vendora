@@ -41,6 +41,58 @@ export class ProductsService {
     return this.formatProduct(product);
   }
 
+  // Get all product
+  async findAll(queryDto: QueryProductDto): Promise<{
+    data: ProductResponseDto[];
+    meta: {
+      total: number;
+      page: number;
+      limit: number;
+      totalPages: number;
+    };
+  }> {
+    const { category, isActive, search, page = 1, limit = 10 } = queryDto;
+
+    const where: Prisma.ProductWhereInput = {};
+
+    if (category) {
+      where.categoryId = category;
+    }
+
+    if (isActive !== undefined) {
+      where.isActive = isActive;
+    }
+
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    const total = await this.prisma.product.count({ where });
+
+    const products = await this.prisma.product.findMany({
+      where,
+      skip: (page - 1) * limit,
+      take: limit,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        category: true,
+      },
+    });
+
+    return {
+      data: products.map((product) => this.formatProduct(product)),
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
   private formatProduct(
     product: Product & { category: Category },
   ): ProductResponseDto {
