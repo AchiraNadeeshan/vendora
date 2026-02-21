@@ -7,3 +7,19 @@ Generate API Documentation
 ```bash
 npx @redocly/cli build-docs swagger.json --output api-docs.html
 ```
+
+To generate new classes for a new module. 
+
+Example for category classes
+
+```bash
+npx nest g module modules/category
+```
+
+```bash
+npx nest g controller modules/category
+```
+
+```bash
+npx nest g service modules/category
+```
