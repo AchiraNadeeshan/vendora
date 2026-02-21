@@ -108,6 +108,47 @@ export class ProductsService {
     return this.formatProduct(product);
   }
 
+  // Update product
+  async update(
+    id: string,
+    updateProductDto: UpdateProductDto,
+  ): Promise<ProductResponseDto> {
+    const existingProduct = await this.prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!existingProduct) {
+      throw new NotFoundException('Product not found');
+    }
+
+    if (updateProductDto.sku && updateProductDto.sku !== existingProduct.sku) {
+      const skuTaken = await this.prisma.product.findUnique({
+        where: { sku: updateProductDto.sku },
+      });
+
+      if (skuTaken) {
+        throw new ConflictException(
+          `Product with SKU ${updateProductDto.sku} already exists`,
+        );
+      }
+    }
+
+    const updateData: any = { ...updateProductDto };
+    if (updateProductDto.price !== undefined) {
+      updateData.price = new Prisma.Decimal(updateProductDto.price);
+    }
+
+    const updatedProduct = await this.prisma.product.update({
+      where: { id },
+      data: updateData,
+      include: {
+        category: true,
+      },
+    });
+
+    return this.formatProduct(updatedProduct);
+  }
+
   private formatProduct(
     product: Product & { category: Category },
   ): ProductResponseDto {

@@ -830,6 +830,56 @@
         "tags": [
           "Products"
         ]
+      },
+      "patch": {
+        "operationId": "ProductsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Product updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Product not found"
+          },
+          "409": {
+            "description": "SKu already exists"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update a product (Admin Only)",
+        "tags": [
+          "Products"
+        ]
       }
     }
   },
@@ -1319,6 +1369,56 @@
           "createdAt",
           "updatedAt"
         ]
+      },
+      "UpdateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Product name",
+            "example": "Wireless Headphones",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "description": "Prodcut description",
+            "example": "High-quality wireless headphoneswith noise cancellation"
+          },
+          "price": {
+            "type": "number",
+            "description": "Product price in USD",
+            "example": 99.99,
+            "minimum": 0
+          },
+          "stock": {
+            "type": "number",
+            "description": "Stock quantity",
+            "example": 100,
+            "minimum": 0
+          },
+          "sku": {
+            "type": "string",
+            "description": "Stock keeping Unit (Sku) -unique identifier",
+            "example": "WH-001",
+            "maxLength": 50
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Product image url",
+            "example": "https://example.com/image.jpg"
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Product category",
+            "example": "Electronics"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Whether product is active and available for purchase",
+            "example": true,
+            "default": true
+          }
+        }
       }
     }
   }

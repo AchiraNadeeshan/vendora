@@ -112,4 +112,35 @@ export class ProductsController {
   async findOne(@Param('id') id: string): Promise<ProductResponseDto> {
     return await this.productsService.findOne(id);
   }
+
+  // Update a product
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Update a product (Admin Only)',
+  })
+  @ApiBody({
+    type: UpdateProductDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Product updated successfully',
+    type: ProductResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Product not found',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'SKu already exists',
+  })
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ): Promise<ProductResponseDto> {
+    return await this.productsService.update(id, updateProductDto);
+  }
 }
