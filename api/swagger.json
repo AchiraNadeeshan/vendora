@@ -183,7 +183,7 @@
         ],
         "summary": "Get current user profile",
         "tags": [
-          "users"
+          "Users"
         ]
       },
       "patch": {
@@ -224,7 +224,7 @@
         ],
         "summary": "Update current user profile",
         "tags": [
-          "users"
+          "Users"
         ]
       },
       "delete": {
@@ -245,7 +245,7 @@
         ],
         "summary": "Delete current user account",
         "tags": [
-          "users"
+          "Users"
         ]
       }
     },
@@ -278,7 +278,7 @@
         ],
         "summary": "Get all users",
         "tags": [
-          "users"
+          "Users"
         ]
       }
     },
@@ -320,7 +320,7 @@
         ],
         "summary": "Get user by ID",
         "tags": [
-          "users"
+          "Users"
         ]
       },
       "delete": {
@@ -350,7 +350,7 @@
         ],
         "summary": "Delete user by ID",
         "tags": [
-          "users"
+          "Users"
         ]
       }
     },
@@ -383,7 +383,46 @@
         ],
         "summary": "Change current user password",
         "tags": [
-          "users"
+          "Users"
+        ]
+      }
+    },
+    "/api/v1/categories": {
+      "post": {
+        "operationId": "CategoryController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Category created successfully."
+          },
+          "400": {
+            "description": "Invalid input data."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden."
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a new category",
+        "tags": [
+          "Categories"
         ]
       }
     }
@@ -396,7 +435,7 @@
   },
   "tags": [
     {
-      "name": "auth",
+      "name": "Auth",
       "description": "Authentication related endpoints"
     }
   ],
@@ -599,6 +638,44 @@
         "required": [
           "currentPassword",
           "newPassword"
+        ]
+      },
+      "CreateCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Electronics",
+            "description": "The name of the category",
+            "maxLength": 100
+          },
+          "description": {
+            "type": "string",
+            "example": "Devices and gadgets including phones, laptops, and accessories",
+            "description": "A brief description of the category",
+            "maxLength": 255
+          },
+          "slug": {
+            "type": "string",
+            "example": "electronics",
+            "description": "The URL-friendly slug for the category",
+            "maxLength": 100
+          },
+          "imageUrl": {
+            "type": "string",
+            "example": "https://example.com/images/electronics.png",
+            "description": "URL of the category image",
+            "maxLength": 255
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true,
+            "description": "Indicates if the category is active",
+            "default": true
+          }
+        },
+        "required": [
+          "name"
         ]
       }
     }
