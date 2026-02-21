@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -22,6 +23,7 @@ import { Role } from '@prisma/client';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryResponseDto } from './dto/category-response.dto';
 import { QueryCategoryDto } from './dto/query-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @ApiTags('Categories')
 @Controller('categories')
@@ -103,5 +105,34 @@ export class CategoryController {
   @ApiResponse({ status: 404, description: 'Category not found' })
   async findBySlug(@Param('slug') slug: string): Promise<CategoryResponseDto> {
     return await this.categoryService.findBySlug(slug);
+  }
+
+  // Update category ( Admin only)
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Update category (Admin only)' })
+  @ApiBody({
+    type: UpdateCategoryDto,
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'category updated successfully',
+    type: CategoryResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Category not found',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Category slug already',
+  })
+  async update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+  ): Promise<CategoryResponseDto> {
+    return await this.categoryService.update(id, updateCategoryDto);
   }
 }
