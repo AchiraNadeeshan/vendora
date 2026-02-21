@@ -25,7 +25,7 @@ export class CreateProductDto {
 
   @ApiProperty({
     description: 'Prodcut description',
-    example: 'High-quality wireless headphoneswith noise cancellation',
+    example: 'High-quality wireless headphones with noise cancellation',
     required: false,
   })
   @IsString()

@@ -880,6 +880,39 @@
         "tags": [
           "Products"
         ]
+      },
+      "delete": {
+        "operationId": "ProductsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Product deleted successfully"
+          },
+          "400": {
+            "description": "Cannot delete product in active orders"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete product (Admin Only) ",
+        "tags": [
+          "Products"
+        ]
       }
     },
     "/api/v1/products/{id}/stock": {
@@ -1313,7 +1346,7 @@
           "description": {
             "type": "string",
             "description": "Prodcut description",
-            "example": "High-quality wireless headphoneswith noise cancellation"
+            "example": "High-quality wireless headphones with noise cancellation"
           },
           "price": {
             "type": "number",
@@ -1444,7 +1477,7 @@
           "description": {
             "type": "string",
             "description": "Prodcut description",
-            "example": "High-quality wireless headphoneswith noise cancellation"
+            "example": "High-quality wireless headphones with noise cancellation"
           },
           "price": {
             "type": "number",
