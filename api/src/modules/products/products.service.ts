@@ -93,6 +93,21 @@ export class ProductsService {
     };
   }
 
+  // Get product by id
+  async findOne(id: string): Promise<ProductResponseDto> {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      include: {
+        category: true,
+      },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    return this.formatProduct(product);
+  }
+
   private formatProduct(
     product: Product & { category: Category },
   ): ProductResponseDto {

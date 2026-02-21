@@ -94,4 +94,22 @@ export class ProductsController {
   async findAll(@Query() queryDto: QueryProductDto) {
     return await this.productsService.findAll(queryDto);
   }
+
+  //Get product by id
+  @Get(':id')
+  @ApiOperation({
+    summary: ' Get product by id',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Product details',
+    type: ProductResponseDto,
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Product not found',
+  })
+  async findOne(@Param('id') id: string): Promise<ProductResponseDto> {
+    return await this.productsService.findOne(id);
+  }
 }
