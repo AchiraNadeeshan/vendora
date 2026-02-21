@@ -881,6 +881,68 @@
           "Products"
         ]
       }
+    },
+    "/api/v1/products/{id}/stock": {
+      "patch": {
+        "operationId": "ProductsController_updateStock",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quantity": {
+                    "type": "number",
+                    "description": "Stock adjustment ( positive to add, negative to subtract) ",
+                    "example": 10
+                  }
+                },
+                "required": [
+                  "quantity"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stock updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Insufficient stock"
+          },
+          "404": {
+            "description": "Product not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Update product stock (Admin Only)",
+        "tags": [
+          "Products"
+        ]
+      }
     }
   },
   "info": {

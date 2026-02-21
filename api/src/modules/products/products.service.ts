@@ -149,6 +149,32 @@ export class ProductsService {
     return this.formatProduct(updatedProduct);
   }
 
+  // Update product stock
+  async updateStock(id: string, quantity: number): Promise<ProductResponseDto> {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    const newStock = product.stock + quantity;
+
+    if (newStock < 0) {
+      throw new BadRequestException('Insufficient stock');
+    }
+
+    const updatedProduct = await this.prisma.product.update({
+      where: { id },
+      data: { stock: newStock },
+      include: {
+        category: true,
+      },
+    });
+
+    return this.formatProduct(updatedProduct);
+  }
+
   private formatProduct(
     product: Product & { category: Category },
   ): ProductResponseDto {
