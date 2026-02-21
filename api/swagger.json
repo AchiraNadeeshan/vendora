@@ -654,6 +654,49 @@
           "Categories"
         ]
       }
+    },
+    "/api/v1/products": {
+      "post": {
+        "operationId": "ProductsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Product created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - Admin role required"
+          },
+          "409": {
+            "description": "Sku already exists"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Create a new product (Admin Only)",
+        "tags": [
+          "Products"
+        ]
+      }
     }
   },
   "info": {
@@ -1011,6 +1054,137 @@
             "default": true
           }
         }
+      },
+      "CreateProductDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Product name",
+            "example": "Wireless Headphones",
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "description": "Prodcut description",
+            "example": "High-quality wireless headphoneswith noise cancellation"
+          },
+          "price": {
+            "type": "number",
+            "description": "Product price in USD",
+            "example": 99.99,
+            "minimum": 0
+          },
+          "stock": {
+            "type": "number",
+            "description": "Stock quantity",
+            "example": 100,
+            "minimum": 0
+          },
+          "sku": {
+            "type": "string",
+            "description": "Stock keeping Unit (Sku) -unique identifier",
+            "example": "WH-001",
+            "maxLength": 50
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Product image url",
+            "example": "https://example.com/image.jpg"
+          },
+          "categoryId": {
+            "type": "string",
+            "description": "Product category",
+            "example": "Electronics"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Whether product is active and available for purchase",
+            "example": true,
+            "default": true
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "stock",
+          "sku",
+          "categoryId"
+        ]
+      },
+      "ProductResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Product ID",
+            "example": "46545646sds-4584s68sd-4654684sd"
+          },
+          "name": {
+            "type": "string",
+            "description": "Product name",
+            "example": "Wireless Headphone"
+          },
+          "description": {
+            "type": "object",
+            "description": "Product description",
+            "example": "High quality wireless headphones",
+            "nullable": true
+          },
+          "price": {
+            "type": "number",
+            "description": "Product price",
+            "example": 99.99
+          },
+          "stock": {
+            "type": "number",
+            "description": "Product stock",
+            "example": 100
+          },
+          "sku": {
+            "type": "string",
+            "description": "Stock keeping Unit",
+            "example": "WH-001"
+          },
+          "imageUrl": {
+            "type": "object",
+            "description": "Product image url",
+            "example": "https://example.com/image.jpg"
+          },
+          "category": {
+            "type": "object",
+            "description": "Product category",
+            "example": "Electronics"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Product availability status",
+            "example": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Creation timestamp"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "price",
+          "stock",
+          "sku",
+          "imageUrl",
+          "category",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
       }
     }
   }
