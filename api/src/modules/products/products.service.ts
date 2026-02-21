@@ -175,6 +175,33 @@ export class ProductsService {
     return this.formatProduct(updatedProduct);
   }
 
+  // Remove a product
+  async remove(id: string): Promise<{ message: string }> {
+    const product = await this.prisma.product.findUnique({
+      where: { id },
+      include: {
+        orderItems: true,
+        cartItems: true,
+      },
+    });
+
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+
+    if (product.orderItems.length > 0) {
+      throw new BadRequestException(
+        'Cannot delete product that is part of existing orders. Consider marking it as inactive only',
+      );
+    }
+
+    await this.prisma.product.delete({
+      where: { id },
+    });
+
+    return { message: 'Product deleted successfully' };
+  }
+
   private formatProduct(
     product: Product & { category: Category },
   ): ProductResponseDto {
