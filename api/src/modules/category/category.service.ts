@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -177,6 +178,36 @@ export class CategoryService {
       updatedCategory,
       Number(updatedCategory._count.products),
     );
+  }
+
+  // Remove a catgory
+  async remove(id: string): Promise<{ message: string }> {
+    const category = await this.prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: {
+            products: true,
+          },
+        },
+      },
+    });
+
+    if (!category) {
+      throw new NotFoundException('Category not found');
+    }
+
+    if (category._count.products > 0) {
+      throw new BadRequestException(
+        `Cannot delete category with ${category._count.products} products. Remove or reassign first`,
+      );
+    }
+
+    await this.prisma.category.delete({
+      where: { id },
+    });
+
+    return { message: `Category delete successfully` };
   }
 
   private formatCategory(

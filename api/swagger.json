@@ -592,6 +592,33 @@
         "tags": [
           "Categories"
         ]
+      },
+      "delete": {
+        "operationId": "CategoryController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Cannot delete category with products"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Delete category (Admin Only)",
+        "tags": [
+          "Categories"
+        ]
       }
     },
     "/api/v1/categories/slug/{slug}": {

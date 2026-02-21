@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -134,5 +137,20 @@ export class CategoryController {
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<CategoryResponseDto> {
     return await this.categoryService.update(id, updateCategoryDto);
+  }
+
+  // Delete category (Admin only)
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiBearerAuth('JWT-auth')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete category (Admin Only)' })
+  @ApiResponse({
+    status: 400,
+    description: 'Cannot delete category with products',
+  })
+  async remove(@Param('id') id: string): Promise<{ message: string }> {
+    return await this.categoryService.remove(id);
   }
 }
