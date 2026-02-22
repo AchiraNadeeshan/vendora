@@ -1395,6 +1395,200 @@
           "Orders"
         ]
       }
+    },
+    "/api/v1/payments/create-intent": {
+      "post": {
+        "description": "Create a payment intent for an order",
+        "operationId": "PaymentsController_createPaymentIntent",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePaymentIntentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment intent created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePaymentIntentApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid data or order not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "create payment intent",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/confirm": {
+      "post": {
+        "description": "Confirm a payment intent for an order",
+        "operationId": "PaymentsController_confirmPayment",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmPaymentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment confirmed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentApiResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Payment not found or already completed"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Confirm payment",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments": {
+      "get": {
+        "description": "Get all payments for the current user",
+        "operationId": "PaymentsController_findAll",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Payments retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentApiResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get all payments",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/{id}": {
+      "get": {
+        "description": "Get a specific payment by its ID",
+        "operationId": "PaymentsController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Payment ID",
+            "schema": {
+              "example": "154sd4848ds5d-4654-4sdd8s7d-sd4656",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get payment by ID",
+        "tags": [
+          "payments"
+        ]
+      }
+    },
+    "/api/v1/payments/order/{orderId}": {
+      "get": {
+        "description": "Get payment information for a specific order",
+        "operationId": "PaymentsController_findByOrder",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "description": "Order ID",
+            "schema": {
+              "example": "order-123",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentApiResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Payment not found"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Get payment by order ID",
+        "tags": [
+          "payments"
+        ]
+      }
     }
   },
   "info": {
@@ -1769,7 +1963,7 @@
           },
           "price": {
             "type": "number",
-            "description": "Product price in USD",
+            "description": "Product price in usd",
             "example": 99.99,
             "minimum": 0
           },
@@ -1900,7 +2094,7 @@
           },
           "price": {
             "type": "number",
-            "description": "Product price in USD",
+            "description": "Product price in usd",
             "example": 99.99,
             "minimum": 0
           },
@@ -2107,6 +2301,138 @@
       "UpdateOrderDto": {
         "type": "object",
         "properties": {}
+      },
+      "CreatePaymentIntentDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreatePaymentIntentResponse": {
+        "type": "object",
+        "properties": {
+          "clientSecret": {
+            "type": "string",
+            "example": "pi_165465465",
+            "description": "Stripe client secret for payment confirmation"
+          },
+          "paymentId": {
+            "type": "string",
+            "example": "2165465-454-sds4s854d65",
+            "description": "Payment ID in database"
+          }
+        },
+        "required": [
+          "clientSecret",
+          "paymentId"
+        ]
+      },
+      "CreatePaymentIntentApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/CreatePaymentIntentResponse"
+          },
+          "message": {
+            "type": "string",
+            "example": "Payment intent created successfully"
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "ConfirmPaymentDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "PaymentResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1215645s454sdosd4s-454sd"
+          },
+          "orderId": {
+            "type": "string",
+            "example": "order-123"
+          },
+          "amount": {
+            "type": "number",
+            "example": 99.99
+          },
+          "userId": {
+            "type": "string",
+            "example": "user-456"
+          },
+          "currency": {
+            "type": "string",
+            "example": "usd"
+          },
+          "status": {
+            "type": "string",
+            "example": "COMPLETED",
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "FAILED",
+              "CANCELLED"
+            ]
+          },
+          "paymentMethod": {
+            "type": "object",
+            "example": "STRIPE",
+            "nullable": true
+          },
+          "transactionId": {
+            "type": "object",
+            "example": "pi_1213546846",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "orderId",
+          "amount",
+          "userId",
+          "currency",
+          "status",
+          "paymentMethod",
+          "transactionId",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaymentApiResponseDto": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/PaymentResponseDto"
+          },
+          "message": {
+            "type": "string",
+            "example": "Payment retrieved successfully"
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
       }
     }
   }
