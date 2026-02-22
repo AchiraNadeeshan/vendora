@@ -5,7 +5,7 @@ Backend APIs for Vendora E-commerce Application
 Generate API Documentation
 
 ```bash
-npx @redocly/cli build-docs swagger.json --output api-docs.html
+npx @redocly/cli build-docs backend/swagger.json --output docs/api-docs.html
 ```
 
 To generate new classes for a new module. 
