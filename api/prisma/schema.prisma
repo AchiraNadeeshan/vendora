@@ -72,7 +72,7 @@ model Product {
   cartItems  CartItem[] // A product can be part of many cart items
 
   categoryId String
-  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade) // Set categoryId to null if the category is deleted
+  category   Category @relation(fields: [categoryId], references: [id]) // Relation to Category
 
   // Timestamps
   createdAt DateTime @default(now())
@@ -115,8 +115,8 @@ model OrderItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([productId])
   @@index([orderId])
+  @@index([productId])
   @@map("order_items") // Map the model to the "order_items" table in
 }
 
@@ -124,7 +124,7 @@ model CartItem {
   id        String  @id @default(uuid())
   quantity  Int     @default(1)
   productId String
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
 
   cartId String
   cart   Cart   @relation(fields: [cartId], references: [id], onDelete: Cascade)
@@ -132,10 +132,10 @@ model CartItem {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([productId, cartId])
-  @@index([productId])
+  @@unique([cartId, productId])
   @@index([cartId])
-  @@map("cart_items") // Map the model to the "cart_items" table in
+  @@index([productId])
+  @@map("carts_items") // Map the model to the "cart_items" table in
 }
 
 model Order {
@@ -148,7 +148,7 @@ model Order {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   cartId String?
-  cart   Cart?  @relation(fields: [cartId], references: [id])
+  cart   Cart?   @relation(fields: [cartId], references: [id])
 
   shippingAddress String?
 
@@ -198,8 +198,8 @@ model Payment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([userId])
   @@index([orderId])
+  @@index([userId])
   @@index([transactionId])
   @@map("payments") // Map the model to the "payments" table in the database
 }

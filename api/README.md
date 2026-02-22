@@ -23,3 +23,9 @@ npx nest g controller modules/category
 ```bash
 npx nest g service modules/category
 ```
+
+If a database schema change is done
+
+```bash
+npx prisma migrate dev --name your_migration_name
+```
