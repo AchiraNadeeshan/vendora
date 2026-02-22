@@ -59,10 +59,12 @@ export class OrdersService {
 
     const order = await this.prisma.$transaction(async (tx) => {
       const data: any = {
-        userId,
         status: OrderStatus.PENDING,
         totalAmount: total,
         shippingAddress,
+        user: {
+          connect: { id: userId }, // connect existing user instead of passing userId directly
+        },
         orderItems: {
           create: items.map((item) => ({
             productId: item.productId,
@@ -73,7 +75,7 @@ export class OrdersService {
       };
 
       if (latestCart?.id) {
-        data.cartId = latestCart.id;
+        data.cart = { connect: { id: latestCart.id } }; // same pattern for cart
       }
 
       const newOrder = await tx.order.create({
