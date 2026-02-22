@@ -33,7 +33,7 @@ export class CreateProductDto {
   description?: string;
 
   @ApiProperty({
-    description: 'Product price in USD',
+    description: 'Product price in usd',
     example: 99.99,
     minimum: 0,
   })
