@@ -58,21 +58,26 @@ export class OrdersService {
     });
 
     const order = await this.prisma.$transaction(async (tx) => {
-      const newOrder = await tx.order.create({
-        data: {
-          userId,
-          status: OrderStatus.PENDING,
-          totalAmount: total,
-          shippingAddress,
-          cartId: latestCart?.id,
-          orderItems: {
-            create: items.map((item) => ({
-              productId: item.productId,
-              quantity: item.quantity,
-              price: item.price,
-            })),
-          },
+      const data: any = {
+        userId,
+        status: OrderStatus.PENDING,
+        totalAmount: total,
+        shippingAddress,
+        orderItems: {
+          create: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+          })),
         },
+      };
+
+      if (latestCart?.id) {
+        data.cartId = latestCart.id;
+      }
+
+      const newOrder = await tx.order.create({
+        data,
         include: {
           orderItems: {
             include: {
