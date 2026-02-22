@@ -13,15 +13,14 @@ import { RefreshTokenStrategy } from './strategies/refresh-token.strategy';
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (ConfigService: ConfigService) => ({
-        secret: ConfigService.get<string>('JWT_SECRET') ?? 'default_secret',
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET') ?? 'default_secret',
         signOptions: {
-          expiresIn: Number(ConfigService.get<number>('JWT_EXPIRES_IN', 900)),
+          expiresIn: Number(configService.get<number>('JWT_EXPIRES_IN', 900)),
         },
       }),
     }),
     PrismaModule,
-    AuthModule,
   ],
   providers: [AuthService, RefreshTokenStrategy, JwtStrategy],
   controllers: [AuthController],
