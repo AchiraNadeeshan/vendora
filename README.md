@@ -47,13 +47,26 @@ npm run start:dev
 ## Environment Variables
 
 ```env
-PORT=
-DATABASE_URL=
-PORT=default
-JWT_SECRET=
-JWT_EXPIRES_IN=
-JWT_REFRESH_SECRET=
-STRIPE_SECRET_KEY=
+# Server Configuration
+PORT=3000
+
+# Neon PostgreSQL Connection
+# Replace <user>, <password>, <host>, and <dbname> with your Neon dashboard values
+# Or you can find your prebuilt link on neon dashboard
+DATABASE_URL="postgresql://<user>:<password>@<host>/<dbname>?sslmode=require"
+
+# JWT Authentication
+# Generate a strong secret (e.g., using: openssl rand -base64 32)
+JWT_SECRET="your_ultra_secure_access_token_secret_2026"
+JWT_REFRESH_SECRET="your_ultra_secure_refresh_token_secret_2026"
+
+# Token Expiry 
+# Use only seconds (900) not string formats (15m, 1h, 7d)
+JWT_EXPIRES_IN=900
+
+# Stripe Payments
+# Use your Test Key (sk_test_...) for development
+STRIPE_SECRET_KEY="sk_test_51Pxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
 ## License
