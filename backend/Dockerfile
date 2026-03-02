@@ -6,6 +6,13 @@ WORKDIR /app
 # If it's in the root of the project, use ./backend/
 COPY package*.json ./
 RUN npm install
+
+# 1. Copy your prisma schema folder first
+COPY prisma ./prisma/
+
+# 2. GENERATE the client (Crucial step)
+RUN npx prisma generate
+
 COPY . .
 RUN npm run build
 
@@ -31,3 +38,6 @@ EXPOSE 8080
 
 # Points to your specific dist/src/main path
 CMD ["node", "dist/src/main"]
+
+
+
