@@ -1,0 +1,49 @@
+schemaVersion: 1.2
+
+endpoints:
+  - name: vendora-api
+    displayName: Vendora Backend API
+    service:
+      basePath: /
+      port: 8080
+    type: REST
+    networkVisibilities:
+      - Public
+    schemaFilePath: .choreo/openapi.yaml
+
+configurations:
+  env:
+    - name: DATABASE_URL
+      valueFrom:
+        configForm:
+          displayName: Database URL
+          required: true
+          type: secret
+
+    - name: JWT_SECRET
+      valueFrom:
+        configForm:
+          displayName: JWT Secret
+          required: true
+          type: secret
+
+    - name: JWT_REFRESH_SECRET
+      valueFrom:
+        configForm:
+          displayName: JWT Refresh Secret
+          required: true
+          type: secret
+
+    - name: JWT_EXPIRES_IN
+      valueFrom:
+        configForm:
+          displayName: JWT Expiration (seconds)
+          required: true
+          type: number
+
+    - name: STRIPE_SECRET_KEY
+      valueFrom:
+        configForm:
+          displayName: Stripe Secret Key
+          required: true
+          type: secret
